@@ -12,10 +12,10 @@ import {
   Flex,
   Text,
 } from "@radix-ui/themes";
+import { Skeleton } from "@/app/components";
 
 const NavBar = () => {
   const currentPath = usePathname();
-  const { status, data: session } = useSession();
   const links = [
     { lable: "Dashboard", href: "/" },
     { lable: "Issues", href: "/issues/list" },
@@ -43,36 +43,46 @@ const NavBar = () => {
               ))}
             </ul>
           </Flex>
-          <Box>
-            {status === "authenticated" && (
-              <DropdownMenu.Root>
-                <DropdownMenu.Trigger>
-                  <Avatar
-                    src={session.user!.image!}
-                    fallback="?"
-                    size="2"
-                    radius="full"
-                    className=" cursor-pointer"
-                    referrerPolicy="no-referrer"
-                  />
-                </DropdownMenu.Trigger>
-                <DropdownMenu.Content>
-                  <DropdownMenu.Label>
-                    <Text size="2">{session.user!.email}</Text>
-                  </DropdownMenu.Label>
-                  <DropdownMenu.Item>
-                    <Link href="/api/auth/signout">Log out</Link>
-                  </DropdownMenu.Item>
-                </DropdownMenu.Content>
-              </DropdownMenu.Root>
-            )}
-            {status === "unauthenticated" && (
-              <Link href="/api/auth/signin">Log in</Link>
-            )}
-          </Box>
+          <AuthStatus />
         </Flex>
       </Container>
     </nav>
+  );
+};
+
+const AuthStatus = () => {
+  const { status, data: session } = useSession();
+
+  if (status === "loading") return <Skeleton width="3rem" />;
+
+  return (
+    <Box>
+      {status === "authenticated" && (
+        <DropdownMenu.Root>
+          <DropdownMenu.Trigger>
+            <Avatar
+              src={session.user!.image!}
+              fallback="?"
+              size="2"
+              radius="full"
+              className=" cursor-pointer"
+              referrerPolicy="no-referrer"
+            />
+          </DropdownMenu.Trigger>
+          <DropdownMenu.Content>
+            <DropdownMenu.Label>
+              <Text size="2">{session.user!.email}</Text>
+            </DropdownMenu.Label>
+            <DropdownMenu.Item>
+              <Link href="/api/auth/signout">Log out</Link>
+            </DropdownMenu.Item>
+          </DropdownMenu.Content>
+        </DropdownMenu.Root>
+      )}
+      {status === "unauthenticated" && (
+        <Link href="/api/auth/signin">Log in</Link>
+      )}
+    </Box>
   );
 };
 

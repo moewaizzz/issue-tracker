@@ -3,6 +3,7 @@ import { SessionProvider } from "next-auth/react";
 import { Session } from "next-auth";
 import { Button } from "@radix-ui/themes";
 import Pagination from "./components/Pagination";
+import LatestIssues from "./LatestIssues";
 
 export default function Home({
   searchParams,
@@ -10,10 +11,8 @@ export default function Home({
   searchParams: { page: string };
 }) {
   return (
-    <Pagination
-      currentPage={parseInt(searchParams.page)}
-      itemsCount={100}
-      pageSize={10}
-    />
+    <>
+      <LatestIssues />
+    </>
   );
 }
